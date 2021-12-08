@@ -1,6 +1,15 @@
 call plug#begin('~/.vim/plugged')
+
+" gruvbox
 Plug 'gruvbox-community/gruvbox'
+
+" nerdtree
 Plug 'scrooloose/nerdtree'
+
+" treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" fuck
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -13,23 +22,56 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
-Plug 'mfussenegger/nvim-jdtls'
 
 call plug#end()
+" treesitter settings
+lua <<EOF
+require('nvim-treesitter.configs').setup({
+    ensure_installed = "all",
 
+    highlight = {
+        enable = true,
+        custom_captures = {
+            -- ["<capture group>"] = "<highlight group>",
+            -- ["keyword"] = "TSString",
+        },
+    },
+
+    incremental_selection = {
+        enable = false,
+        keymaps = {
+            init_selection = "gnn",
+            node_incremental = "grn",
+            scope_incremental = "grc",
+            node_decremental = "grm",
+        },
+    },
+
+    indent = {
+        enable = true 
+    },
+})
+
+EOF
+
+" gruvbox settings
 colorscheme gruvbox
 set background=dark
 hi Normal guibg=NONE ctermbg=NONE
 
+" nerdtree toggle
 nmap <C-f> :NERDTreeToggle<CR>
+
+" remapping 
 nnoremap<\> <leader> <cr>
+:inoremap jj <Esc>
+
 " Find files using Telescope command-line sugar.
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
 
 " Using Lua functions
 nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
 
-:inoremap jj <Esc>
 
 lua << EOF
 -- require('lspconfig').clangd.setup{}
