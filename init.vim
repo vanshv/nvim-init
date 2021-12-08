@@ -1,14 +1,3 @@
-set tabstop=4 softtabstop=4
-set noerrorbells
-set incsearch
-set scrolloff=8
-set relativenumber
-set shiftwidth=4
-set expandtab
-set smartindent
-set nu
-set completeopt=menu,menuone,noselect
-
 call plug#begin('~/.vim/plugged')
 Plug 'gruvbox-community/gruvbox'
 Plug 'scrooloose/nerdtree'
@@ -24,6 +13,8 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
+Plug 'mfussenegger/nvim-jdtls'
+
 call plug#end()
 
 colorscheme gruvbox
@@ -34,22 +25,24 @@ nmap <C-f> :NERDTreeToggle<CR>
 nnoremap<\> <leader> <cr>
 " Find files using Telescope command-line sugar.
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-nnoremap <leader>fb <cmd>Telescope buffers<cr>
-nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
 " Using Lua functions
 nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
-nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
-nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 
 :inoremap jj <Esc>
 
 lua << EOF
-require('lspconfig').clangd.setup{}
+-- require('lspconfig').clangd.setup{}
 
 require'lspinstall'.setup() -- important
+
+
+require'lspconfig'.java_language_server.setup{}
+    filetypes = { "java" }
+    root_dir = function(startpath)
+        return M.search_ancestors(startpath, matcher)
+      end
+    settings = {}
 
 local servers = require'lspinstall'.installed_servers()
 for _, server in pairs(servers) do
